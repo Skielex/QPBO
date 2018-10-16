@@ -1,6 +1,7 @@
 /* QPBO_maxflow.cpp */
 /*
     Copyright 2006-2008 Vladimir Kolmogorov (vnk@ist.ac.at).
+    Modifications Copyright 2018 Niels Jeppesen (niejep@dtu.dk).
 
     This file is part of QPBO.
 
@@ -147,13 +148,13 @@ template <typename REAL>
 		if (i==node_last[0]) i = nodes[1];
 
 		i -> next = NULL;
-		i -> is_marked = 0;
-		i -> is_in_changed_list = 0;
+		i -> is_marked = false;
+		i -> is_in_changed_list = false;
 		i -> TS = TIME;
 		if (i->tr_cap > 0)
 		{
 			/* i is connected to the source */
-			i -> is_sink = 0;
+			i -> is_sink = false;
 			i -> parent = QPBO_MAXFLOW_TERMINAL;
 			set_active(i);
 			i -> DIST = 1;
@@ -161,7 +162,7 @@ template <typename REAL>
 		else if (i->tr_cap < 0)
 		{
 			/* i is connected to the sink */
-			i -> is_sink = 1;
+			i -> is_sink = true;
 			i -> parent = QPBO_MAXFLOW_TERMINAL;
 			set_active(i);
 			i -> DIST = 1;
@@ -201,7 +202,7 @@ template <typename REAL>
 			if (GetMate1(i)->is_removed) continue;
 		}
 		i->next = NULL;
-		i->is_marked = 0;
+		i->is_marked = false;
 		set_active(i);
 
 		if (i->tr_cap == 0)
@@ -214,7 +215,7 @@ template <typename REAL>
 		{
 			if (!i->parent || i->is_sink)
 			{
-				i->is_sink = 0;
+				i->is_sink = false;
 				for (a=i->first; a; a=a->next)
 				{
 					j = a->head;
@@ -231,7 +232,7 @@ template <typename REAL>
 		{
 			if (!i->parent || !i->is_sink)
 			{
-				i->is_sink = 1;
+				i->is_sink = true;
 				for (a=i->first; a; a=a->next)
 				{
 					j = a->head;
@@ -544,7 +545,7 @@ template <typename REAL>
 				j = a -> head;
 				if (!j->parent)
 				{
-					j -> is_sink = 0;
+					j -> is_sink = false;
 					j -> parent = a -> sister;
 					j -> TS = i -> TS;
 					j -> DIST = i -> DIST + 1;
@@ -571,7 +572,7 @@ template <typename REAL>
 				j = a -> head;
 				if (!j->parent)
 				{
-					j -> is_sink = 1;
+					j -> is_sink = true;
 					j -> parent = a -> sister;
 					j -> TS = i -> TS;
 					j -> DIST = i -> DIST + 1;

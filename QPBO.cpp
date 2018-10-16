@@ -709,7 +709,7 @@ template <typename REAL>
 		{
 			i[1]->first = NULL;
 			i[1]->tr_cap = -i[0]->tr_cap;
-			i[1]->is_sink = i[0]->is_sink ^ 1;
+			i[1]->is_sink = i[0]->is_sink ^ true;
 			i[1]->DIST = i[0]->DIST;
 			i[1]->TS = i[0]->TS;
 

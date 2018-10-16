@@ -4,7 +4,7 @@
 
     Copyright 2006-2008 Vladimir Kolmogorov (vnk@ist.ac.at).
     Modifications Copyright 2018 Niels Jeppesen (niejep@dtu.dk).
-
+	
     This file is part of QPBO.
 
     QPBO is free software: you can redistribute it and/or modify
@@ -204,7 +204,7 @@ public:
 
 	// Sets label for node i. 
 	// Can be called before Stitch()/Probe()/Improve().
-	void SetLabel(NodeId i, int label);
+	void SetLabel(NodeId i, char label);
 
 	///////////////////////////////////////////////////////////////
 	// Read node & edge information.
@@ -412,18 +412,18 @@ private:
 		Node	*next;		// pointer to the next active Node
 							// (or to itself if it is the last Node in the list)
 
-		unsigned int is_sink : 1;	// flag showing whether the node is in the source or in the sink tree (if parent!=NULL)
-		unsigned int is_marked : 1;	// set by mark_node()
-		unsigned int is_in_changed_list : 1; // set by maxflow if the node is added to changed_list
-		unsigned int is_removed : 1; // 1 means that the node is removed (for node[0][...])
+		bool is_sink : true;	// flag showing whether the node is in the source or in the sink tree (if parent!=NULL)
+		bool is_marked : true;	// set by mark_node()
+		bool is_in_changed_list : true; // set by maxflow if the node is added to changed_list
+		bool is_removed : true; // true means that the node is removed (for node[0][...])
 
-		int	         label : 2;
-		int	         label_after_fix0 : 2;
-		int	         label_after_fix1 : 2;
+		signed char label : 2;
+		signed char label_after_fix0 : 2;
+		signed char label_after_fix1 : 2;
 
-		unsigned int list_flag : 2; // used in Probe() and Improve()
+		char list_flag : 2; // used in Probe() and Improve()
 
-		unsigned int user_label : 1; // set by calling SetLabel()
+		char user_label : 1; // set by calling SetLabel()
 
 		union
 		{
@@ -639,7 +639,7 @@ template <typename REAL>
 {
 	if (i->parent)
 	{
-		return (i->is_sink) ? 1 : 0;
+		return (i->is_sink) ? true : false;
 	}
 	else
 	{
@@ -658,7 +658,7 @@ template <typename REAL>
 		queue_last[1] = i;
 		i -> next = i;
 	}
-	i->is_marked = 1;
+	i->is_marked = true;
 }
 
 template <typename REAL> 
@@ -679,7 +679,7 @@ template <typename REAL>
 }
 
 template <typename REAL> 
-	inline void QPBO<REAL>::SetLabel(NodeId i, int label)
+	inline void QPBO<REAL>::SetLabel(NodeId i, char label)
 {
 	user_assert(i >= 0 && i < node_num);
 

@@ -755,8 +755,8 @@ template <typename REAL>
 	all_edges_submodular = false;
 	Solve();
 
-	int MASK_CURRENT = 1;
-	int MASK_NEXT = 2;
+	signed char MASK_CURRENT = 1;
+	signed char MASK_NEXT = 2;
 
 	unlabeled_num = 0;
 	for (i=nodes[0], i_index=0; i<node_last[0]; i++, i_index++)
@@ -765,12 +765,12 @@ template <typename REAL>
 		{
 			FixNode(i, i->label);
 			mapping[i_index] = i->label;
-			i->is_removed = 1;
+			i->is_removed = true;
 			list.Remove(i_index);
 		}
 		else
 		{
-			i->is_removed = 0;
+			i->is_removed = false;
 			i->list_flag = MASK_CURRENT;
 			mapping[i_index] = -1;
 			unlabeled_num ++;
@@ -782,7 +782,7 @@ template <typename REAL>
 	maxflow();
 
 	// INVARIANTS: 
-	//    node i_index is removed <=> mapping[i_index] >= 0 <=> nodes[0][i_index].is_removed == 1
+	//    node i_index is removed <=> mapping[i_index] >= 0 <=> nodes[0][i_index].is_removed == true
 	//    edge e is removed <=> Arc::sister does not point to the correct arc for at least one out of the 4 arcs
 
 
@@ -881,7 +881,7 @@ template <typename REAL>
 					mapping[j_index] = 2*i_index + 2 + j->label_after_fix0;
 					need_to_merge = true;
 				}
-				j->is_removed = 1;
+				j->is_removed = true;
 				if (i_index_next == j_index) i_index_next = list.GetNext(j_index);
 				list.Remove(j_index);
 				unlabeled_num --;
@@ -1031,7 +1031,7 @@ template <typename REAL>
 			{
 				j = *ptr;
 
-				j->is_in_changed_list = 0;
+				j->is_in_changed_list = false;
 				j->label_after_fix0 = -1;
 				j->label_after_fix1 = -1;
 
@@ -1045,7 +1045,7 @@ template <typename REAL>
 					j_index = (int)(j - nodes[0]);
 					FixNode(j, j->label);
 					mapping[j_index] = j->label;
-					j->is_removed = 1;
+					j->is_removed = true;
 					if (i_index_next == j_index) i_index_next = list.GetNext(j_index);
 					list.Remove(j_index);
 					unlabeled_num --;
@@ -1230,10 +1230,10 @@ template <typename REAL>
 	{
 		i->label = what_segment(i);
 		if (i->label == what_segment(GetMate0(i))) i->label = i->user_label;
-		else if (i->label != (int)i->user_label) 
+		else if (i->label != (signed char)i->user_label) 
 		{
 			success = true;
-			i->user_label = (unsigned int)i->label;
+			i->user_label = (char)i->label;
 		}
 	}
 
