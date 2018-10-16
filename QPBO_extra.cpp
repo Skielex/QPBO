@@ -1,6 +1,7 @@
 /* QPBO_extra.cpp */
 /*
     Copyright 2006-2008 Vladimir Kolmogorov (vnk@ist.ac.at).
+    Modifications Copyright 2018 Niels Jeppesen (niejep@dtu.dk).
 
     This file is part of QPBO.
 
@@ -276,7 +277,7 @@ template <typename REAL>
 {
 	code_assert(first_free && IsNode0(i) && IsNode0(j) && i!=j);
 
-	int e = ((int)(first_free - arcs[IsArc0(first_free) ? 0 : 1])) & (~1);
+	EdgeId e = ((EdgeId)(first_free - arcs[IsArc0(first_free) ? 0 : 1])) & (~1);
 	first_free = first_free->next;
 
 	Arc* _a[2] = { &arcs[0][e], &arcs[1][e] };
@@ -508,7 +509,7 @@ template <typename REAL>
 	int i_index, j_index;
 	int nodeNumOld = GetNodeNum();
 	int nodeNumNew = 1;
-	int edgeNumOld = GetMaxEdgeNum();
+	EdgeId edgeNumOld = GetMaxEdgeNum();
 	int e;
 	Node* i;
 
@@ -595,7 +596,7 @@ template <typename REAL>
 	}
 
 	////////////////////////////////////////////////////////////////
-	int edgeNumNew = 0;
+	EdgeId edgeNumNew = 0;
 	for (e=0; e<edgeNumOld; e++)
 	{
 		if ( arcs[0][2*e].sister )
@@ -717,7 +718,7 @@ private:
 };
 
 template <typename REAL>
-	void QPBO<REAL>::SetMaxEdgeNum(int num)
+	void QPBO<REAL>::SetMaxEdgeNum(EdgeId num)
 {
 	if (num > GetMaxEdgeNum()) reallocate_arcs(2*num);
 }

@@ -3,6 +3,7 @@
 	Version 1.4
 
     Copyright 2006-2008 Vladimir Kolmogorov (vnk@ist.ac.at).
+    Modifications Copyright 2018 Niels Jeppesen (niejep@dtu.dk).
 
     This file is part of QPBO.
 
@@ -38,7 +39,7 @@
 
 		P. L. Hammer, P. Hansen, and B. Simeone. 
 		Roof duality, complementation and persistency in quadratic 0-1 optimization. 
-		Mathematical Programming, 28:121–155, 1984.
+		Mathematical Programming, 28:121ï¿½155, 1984.
 
 		E. Boros, P. L. Hammer, and X. Sun.
 		Network flows and minimization of quadratic pseudo-Boolean functions. 
@@ -130,7 +131,7 @@ template <typename REAL> class QPBO
 {
 public:
 	typedef int NodeId;
-	typedef int EdgeId;
+	typedef long long EdgeId;
 
 	// Constructor. 
 	// The first argument gives an estimate of the maximum number of nodes that can be added
@@ -148,7 +149,7 @@ public:
 	// 
 	// 2. If Probe() is used with option=1 or option=2, then it is advisable to specify
 	// a larger value of edge_num_max (e.g. twice the number of edges in the original energy).
-	QPBO(int node_num_max, int edge_num_max, void (*err_function)(const char *) = NULL);
+	QPBO(int node_num_max, EdgeId edge_num_max, void (*err_function)(const char *) = NULL);
 	// Copy constructor
 	QPBO(QPBO<REAL>& q);
 
@@ -170,8 +171,8 @@ public:
 	// no calls to delete/new (which could be quite slow).
 	void Reset();
 
-	int GetMaxEdgeNum(); // returns the number of edges for which the memory is allocated. 
-	void SetMaxEdgeNum(int num); // If num > edge_num_max then memory for edges is reallocated. Important for Probe() with option=1,2.
+	EdgeId GetMaxEdgeNum(); // returns the number of edges for which the memory is allocated. 
+	void SetMaxEdgeNum(EdgeId num); // If num > edge_num_max then memory for edges is reallocated. Important for Probe() with option=1,2.
 
 	///////////////////////////////////////////////////////////////
 
@@ -262,7 +263,7 @@ public:
 	//
 	//         A. Billionnet and B. Jaumard. 
 	//         A decomposition method for minimizing quadratic pseudoboolean functions. 
-	//         Operation Research Letters, 8:161–163, 1989.	
+	//         Operation Research Letters, 8:161ï¿½163, 1989.	
 	//
 	//     For a review see also 
 	//
@@ -429,9 +430,9 @@ private:
 			struct
 			{
 				// used inside maxflow algorithm
-				int		TS;			// timestamp showing when DIST was computed
-				int		DIST;		// distance to the terminal
-				Arc		*parent;	// Node's parent
+				long long	TS;			// timestamp showing when DIST was computed
+				int			DIST;		// distance to the terminal
+				Arc			*parent;	// Node's parent
 			};
 			struct
 			{
@@ -470,9 +471,9 @@ private:
 	Arc*	first_free; // list of empty spaces for edges. 
 	void InitFreeList();
 
-	int		node_num;
-	int		node_shift; // = node_num_max*sizeof(Node)
-	int		arc_shift; // = 2*edge_num_max*sizeof(Arc)
+	int			node_num;
+	long long	node_shift; // = node_num_max*sizeof(Node)
+	EdgeId		arc_shift; // = 2*edge_num_max*sizeof(Arc)
 
 	DBlock<nodeptr>		*nodeptr_block;
 
@@ -492,7 +493,7 @@ private:
 	void get_type_information(const char*& type_name, const char*& type_format);
 
 	void reallocate_nodes(int node_num_max_new);
-	void reallocate_arcs(int arc_num_max_new);
+	void reallocate_arcs(EdgeId arc_num_max_new);
 
 	int	stage; // 0: maxflow is solved only for nodes in [nodes[0],node_last[0]).
 		       //    Arcs corresponding to supermodular edges are present in arcs[0] and arcs[1],
@@ -541,7 +542,7 @@ private:
 
 	Node				*queue_first[2], *queue_last[2];	// list of active nodes
 	nodeptr				*orphan_first, *orphan_last;		// list of pointers to orphans
-	int					TIME;								// monotonically increasing global counter
+	long long			TIME;								// monotonically increasing global counter
 
 	/////////////////////////////////////////////////////////////////////////
 
@@ -750,9 +751,9 @@ template <typename REAL>
 }
 
 template <typename REAL> 
-	inline int QPBO<REAL>::GetMaxEdgeNum() 
+	inline typename QPBO<REAL>::EdgeId QPBO<REAL>::GetMaxEdgeNum() 
 {
-	return (int)(arc_max[0]-arcs[0])/2;
+	return (EdgeId)(arc_max[0]-arcs[0])/2;
 }
 
 
