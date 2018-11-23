@@ -403,6 +403,7 @@ public:
 private:
 	// internal variables and functions
 
+# pragma pack (1)
 	struct Arc;
 
 	struct Node
@@ -411,6 +412,26 @@ private:
 
 		Node	*next;		// pointer to the next active Node
 							// (or to itself if it is the last Node in the list)
+
+		union
+		{
+			struct
+			{
+				// used inside maxflow algorithm
+				long long	TS;			// timestamp showing when DIST was computed
+				Arc			*parent;	// Node's parent
+				int			DIST;		// distance to the terminal
+			};
+			struct
+			{
+				Node	*dfs_parent;
+				Arc		*dfs_current;
+				int		region;
+			};
+		};
+
+		REAL		tr_cap;		// if tr_cap > 0 then tr_cap is residual capacity of the Arc SOURCE->Node
+								// otherwise         -tr_cap is residual capacity of the Arc Node->SINK 
 
 		bool is_sink : true;	// flag showing whether the node is in the source or in the sink tree (if parent!=NULL)
 		bool is_marked : true;	// set by mark_node()
@@ -424,26 +445,6 @@ private:
 		char list_flag : 2; // used in Probe() and Improve()
 
 		char user_label : 1; // set by calling SetLabel()
-
-		union
-		{
-			struct
-			{
-				// used inside maxflow algorithm
-				long long	TS;			// timestamp showing when DIST was computed
-				int			DIST;		// distance to the terminal
-				Arc			*parent;	// Node's parent
-			};
-			struct
-			{
-				int		region;
-				Node	*dfs_parent;
-				Arc		*dfs_current;
-			};
-		};
-
-		REAL		tr_cap;		// if tr_cap > 0 then tr_cap is residual capacity of the Arc SOURCE->Node
-								// otherwise         -tr_cap is residual capacity of the Arc Node->SINK 
 	};
 
 	struct Arc
@@ -454,6 +455,7 @@ private:
 
 		REAL		r_cap;		// residual capacity
 	};
+# pragma pack ()
 
 	struct nodeptr
 	{
