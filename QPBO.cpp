@@ -297,7 +297,7 @@ template <typename REAL>
 	if (!fp) return false;
 
 	fprintf(fp, "nodes=%d\n", GetNodeNum());
-	fprintf(fp, "edges=%d\n", edge_num);
+	fprintf(fp, "edges=%lld\n", edge_num);
 	fprintf(fp, "labels=2\n");
 	fprintf(fp, "type=%s\n", type_name);
 	fprintf(fp, "\n");
@@ -339,7 +339,7 @@ template <typename REAL>
 	if (!fp) { printf("Cannot open %s\n", filename); return false; }
 
 	if (fscanf(fp, "nodes=%d\n", &NODE_NUM) != 1) { printf("%s: wrong format\n", filename); fclose(fp); return false; }
-	if (fscanf(fp, "edges=%d\n", &EDGE_NUM) != 1) { printf("%s: wrong format\n", filename); fclose(fp); return false; }
+	if (fscanf(fp, "edges=%lld\n", &EDGE_NUM) != 1) { printf("%s: wrong format\n", filename); fclose(fp); return false; }
 	if (fscanf(fp, "labels=%d\n", &K) != 1) { printf("%s: wrong format\n", filename); fclose(fp); return false; }
 	if (K != 2) { printf("%s: wrong number of labels\n", filename); fclose(fp); return false; }
 	if (fscanf(fp, "type=%10s\n", LINE) != 1) { printf("%s: wrong format\n", filename); fclose(fp); return false; }
