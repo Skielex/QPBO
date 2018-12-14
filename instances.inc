@@ -4,12 +4,6 @@
 #pragma warning(disable: 4661)
 #endif
 
-// Instantiations
-
-template class QPBO<int>;
-template class QPBO<float>;
-template class QPBO<double>;
-
 template <> 
 	inline void QPBO<int>::get_type_information(const char*& type_name, const char*& type_format)
 {
@@ -32,3 +26,8 @@ template <>
 }
 
 
+// Instantiations
+
+template class QPBO<int>;
+template class QPBO<float>;
+template class QPBO<double>;
